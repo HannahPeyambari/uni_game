@@ -36,6 +36,11 @@ GUID = {
     "Assets/Art/Sprites/GroundGrass.png": "3a91b1c0e1a14b8b9d0a1c42f5b7d107",
 }
 
+# fileID of the Obstacle prefab's root GameObject. The scene's obstaclePrefab field and
+# the prefab itself must agree on this exact number, otherwise Unity silently nulls the
+# reference (symptom: no obstacles spawn, plus InvalidCastException in the console).
+PREFAB_ROOT_ID = 100100000
+
 UGUI_TEXT = "5f7201a12d95ffc409449d95f23cf332"
 UGUI_IMAGE = "fe87c0e1cc204ed48ad3b37840f39efc"
 UGUI_BUTTON = "4e29b1a8efbd4b44bb3f3716e73f07ff"
@@ -867,8 +872,8 @@ def build_scene():
         return "{fileID: %d}" % by_path[path].comp_id(index)
 
     def scene_refs(body):
-        return (body.replace("__PREFAB__", "{fileID: 100100000, guid: %s, type: 3}"
-                             % GUID["Assets/Prefabs/Obstacle.prefab"])
+        return (body.replace("__PREFAB__", "{fileID: %d, guid: %s, type: 3}"
+                             % (PREFAB_ROOT_ID, GUID["Assets/Prefabs/Obstacle.prefab"]))
                     .replace("__PLAYER__", comp_ref("Player", 3))
                     .replace("__SPAWNER__", comp_ref("ObstacleSpawner", 0))
                     .replace("__SCORETEXT__", comp_ref("Canvas/ScoreText", 1))
@@ -1095,11 +1100,14 @@ def emit_transform(o, root_order):
 # ---------------------------------------------------------------------------
 def build_prefab():
     guid = GUID["Assets/Prefabs/Obstacle.prefab"]
-    go_id = 100000
-    tr_id = 100001
-    sr_id = 100002
-    col_id = 100003
-    mover_id = 100004
+    # A prefab asset is referenced by the fileID of its ROOT GameObject, and Unity's
+    # convention for that root is 100100000. Scene references (obstaclePrefab) must
+    # use exactly this number, so it is defined once here and used in both places.
+    go_id = 100100000
+    tr_id = 100100001
+    sr_id = 100100002
+    col_id = 100100003
+    mover_id = 100100004
 
     body = []
     body.append(
