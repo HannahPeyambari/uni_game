@@ -1,0 +1,49 @@
+# Unity generated folders
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Mm]emoryCaptures/
+/[Rr]ecordings/
+
+# Never commit the generated solution files
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+ExportedObj/
+sysinfo.txt
+
+# Crash reports
+crashlytics-build.properties
+
+# Visual Studio / Rider / VS Code caches
+.vs/
+.idea/
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Python helper environment used by Tools/ scripts
+.venv/
+__pycache__/
+*.pyc
+
+# Generated build artefacts
+*.apk
+*.aab
+*.unitypackage

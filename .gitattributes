@@ -1,0 +1,16 @@
+# Unity assets are YAML, so treat them as text. Force LF so a Windows checkout
+# does not show every asset as modified.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.ttf binary
+
+*.unity text eol=lf
+*.prefab text eol=lf
+*.asset text eol=lf
+*.meta text eol=lf
+*.mat text eol=lf
+*.controller text eol=lf
+
+merge=unityyamlmerge eol=lf differ=unityyamlmerge
