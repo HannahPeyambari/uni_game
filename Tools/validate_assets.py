@@ -82,6 +82,22 @@ def load_docs(path):
     return docs
 
 
+def prefab_root_game_object(prefab_path):
+    """Return the fileID of a prefab's root GameObject.
+
+    Unity references a prefab ASSET (type: 3) by the fileID of its root GameObject,
+    conventionally 100100000. If a scene points at a fileID that is not the root,
+    Unity silently nulls the reference -- the failure mode this check exists for.
+    """
+    with open(prefab_path) as f:
+        for chunk in re.split(r"(?m)^--- !u!", f.read())[1:]:
+            head = chunk.split("\n", 1)[0]
+            m = re.match(r"(\d+) &(-?\d+)", head)
+            if m and m.group(1) == "1":          # first GameObject document
+                return int(m.group(2))
+    return None
+
+
 def check(path, guids):
     docs = load_docs(path)
     text = open(path).read()
@@ -112,6 +128,14 @@ def check(path, guids):
                               % (path, file_id, guid))
                 continue
             meta_path, is_script, is_texture = guids[guid]
+            if type_id == "3" and not is_script and meta_path.endswith(".prefab.meta"):
+                asset_path = meta_path[:-len(".meta")]
+                root = prefab_root_game_object(asset_path)
+                if root is not None and ref != root:
+                    errors.append(
+                        "%s &%d: prefab reference to %s uses fileID %d but that prefab's "
+                        "root GameObject is %d -- Unity will null this reference"
+                        % (path, file_id, os.path.basename(asset_path), ref, root))
             if type_id == "3" and is_script:
                 if ref != 11500000:
                     errors.append("%s &%d: script reference has fileID %d (expected 11500000)"
